@@ -15,5 +15,10 @@ function signup(event){
       email:emailValue,
       password:passwordValue
     }
-    axios.post('http://localhost:3000/signup',data)
+    axios.post('http://localhost:3000/signup',data).then(res=>{
+        console.log(res.data.newUserDetail);
+        if(res.data.newUserDetail.errors){
+            alert(`${res.data.newUserDetail.errors[0].message}`)
+        }
+    })
 }
