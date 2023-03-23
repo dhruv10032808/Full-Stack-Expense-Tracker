@@ -13,7 +13,7 @@ function login(event){
       password:passwordValue
     }
     axios.post('http://localhost:3000/login',data).then(res=>{
-        alert(res.data.newUserDetail.message);
+        alert(res.data.message);
     }).catch(err=>{
         document.body.innerHTML+=`<div style="color:red">${err.message} </div>`
     })
