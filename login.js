@@ -14,6 +14,7 @@ function login(event){
     }
     axios.post('http://localhost:3000/login',data).then(res=>{
         alert(res.data.message);
+        window.location.href='./expense.html';
     }).catch(err=>{
         document.body.innerHTML+=`<div style="color:red">${err.message} </div>`
     })
