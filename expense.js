@@ -3,6 +3,7 @@ var list=document.getElementById('list');
 var expense=document.getElementById('expense');
 var description=document.getElementById('description');
 var category=document.getElementById('Category');
+const token=localStorage.getItem('token')
 form.addEventListener('submit',local)
 function local(e){
     e.preventDefault();
@@ -14,7 +15,7 @@ function local(e){
     description,
     category
    };
-   axios.post('http://localhost:3000/add-expense',obj)
+   axios.post('http://localhost:3000/add-expense',obj,{headers:{'Authorization':token}})
    .then((res)=>{
     document.getElementById('expense').value="";
     document.getElementById('description').value="";
@@ -28,7 +29,7 @@ function local(e){
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    axios.get('http://localhost:3000/get-expense')
+    axios.get('http://localhost:3000/get-expense',{headers:{'Authorization':token}})
         .then((res)=>{
             for(var i=0;i<res.data.newExpenseDetail.length;i++){
                 onsubmit(res.data.newExpenseDetail[i]);
@@ -63,7 +64,7 @@ function edit(userId,exp,desc,cat){
 }
 
 function del(userId){ 
-    axios.delete(`http://localhost:3000/delete-expense/${userId}`)
+    axios.delete(`http://localhost:3000/delete-expense/${userId}`,{headers:{'Authorization':token}})
     .then((response)=>{
     const curr=document.getElementById(userId);
     list.removeChild(curr);
