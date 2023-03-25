@@ -24,21 +24,36 @@ function local(e){
     onsubmit(res.data.newExpenseDetail);
    })
    .catch((err)=>{
-    document.body.innerHTML=document.body.innerHTML+`<h4>Something went wrong</h4>`
+    document.body.innerHTML=document.body.innerHTML+`<span>Something went wrong</span>`
 })
 }
 
 window.addEventListener('DOMContentLoaded', () => {
     axios.get('http://localhost:3000/get-expense',{headers:{'Authorization':token}})
         .then((res)=>{
+            console.log(res.data.ispremiumuser)
             for(var i=0;i<res.data.newExpenseDetail.length;i++){
                 onsubmit(res.data.newExpenseDetail[i]);
             }
+            // if(res.data.ispremiumuser){
+            //     document.body.innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="${getleaderboard}" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button>`
+            //  }
             console.log(res)
         })
         .catch((err)=>console.log(err));
 
      })
+
+window.addEventListener('DOMContentLoaded',()=>{
+    axios.get('http://localhost:3000/get-expense',{headers:{'Authorization':token}})
+        .then((res)=>{
+            if(res.data.ispremiumuser){
+                document.getElementById('premium').innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button>`
+             }
+            console.log(res)
+        })
+        .catch((err)=>console.log(err));
+})
 
 function onsubmit(user){
     var btn=document.createElement('button');
@@ -83,12 +98,16 @@ async function premium(e){
     "order_id":response.data.order.id,
     //to handle success of payment
     "handler":async function (response){
-     await axios.post('http://localhost:3000/update-transaction-status',{
+     const res=await axios.post('http://localhost:3000/update-transaction-status',{
         order_id:options.order_id,
         payment_id:response.razorpay_payment_id
      },{headers:{'Authorization':token}})
 
      alert('You are a premium user now');
+     console.log(res.data.ispremiumuser)
+     if(res.data.ispremiumuser){
+        document.body.innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button>`
+     }
     }
    }
    const rzp1=new Razorpay(options);
@@ -102,4 +121,19 @@ async function premium(e){
     console.log(response);
     alert('Something went wrong');
    })
+}
+
+function getleaderboard(){
+    console.log('clicked');
+    axios.get('http://localhost:3000/premium/showLeaderboard',{headers:{'Authorization':token}}).then(res=>{
+        for(var i=0;i<res.data.length;i++){
+            leaderboard(res.data[i]);
+        }
+    })
+}
+
+function leaderboard(data){
+    const li=document.createElement('li');
+    li.appendChild(document.createTextNode(`Name-${data.name} Total Expense:${data.total}`));
+    document.getElementById('leaderboard-list').appendChild(li)
 }
