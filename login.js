@@ -1,6 +1,7 @@
 const form=document.getElementById('form');
 const email=document.getElementById('email');
 const password=document.getElementById('password');
+const forgotPassword=document.getElementById('forgotPassword')
 
 form.addEventListener('submit',login);
 
@@ -19,4 +20,10 @@ function login(event){
     }).catch(err=>{
         document.body.innerHTML+=`<div style="color:red">${err.message} </div>`
     })
+}
+
+forgotPassword.addEventListener('click',forgotHandler);
+
+function forgotHandler(){
+    window.location.href='./forgot-password.html'
 }
