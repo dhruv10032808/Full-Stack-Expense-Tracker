@@ -17,6 +17,7 @@ function signup(event){
     }
     axios.post('http://localhost:3000/signup',data).then(res=>{
         console.log(res.data.newUserDetail);
+        window.location.href='./login.html'
         if(res.data.newUserDetail.errors){
             alert(`${res.data.newUserDetail.errors[0].message}`)
         }
