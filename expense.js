@@ -106,7 +106,7 @@ async function premium(e){
      alert('You are a premium user now');
      console.log(res.data.ispremiumuser)
      if(res.data.ispremiumuser){
-        document.body.innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button>`
+        document.getElementById('premium').innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button>`
      }
     }
    }
@@ -134,6 +134,6 @@ function getleaderboard(){
 
 function leaderboard(data){
     const li=document.createElement('li');
-    li.appendChild(document.createTextNode(`Name-${data.name} Total Expense:${data.total}`));
+    li.appendChild(document.createTextNode(`Name-${data.name} Total Expense:${data.totalExpense}`));
     document.getElementById('leaderboard-list').appendChild(li)
 }
