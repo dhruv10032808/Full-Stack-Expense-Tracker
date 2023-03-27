@@ -48,8 +48,9 @@ window.addEventListener('DOMContentLoaded',()=>{
     axios.get('http://localhost:3000/get-expense',{headers:{'Authorization':token}})
         .then((res)=>{
             if(res.data.ispremiumuser){
-                document.getElementById('premium').innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button>`
+                document.getElementById('premium').innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button><button onclick="getReport()" class="btn btn-primary" style="margin-left:10px">Generate report</button>`
              }
+             localStorage.setItem('premium',res.data.ispremiumuser)
             console.log(res)
         })
         .catch((err)=>console.log(err));
@@ -106,7 +107,7 @@ async function premium(e){
      alert('You are a premium user now');
      console.log(res.data.ispremiumuser)
      if(res.data.ispremiumuser){
-        document.getElementById('premium').innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button>`
+        document.getElementById('premium').innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button><button onclick="getReport()" class="btn btn-primary" style="margin-left:10px">Generate report<button>`
      }
     }
    }
@@ -136,4 +137,25 @@ function leaderboard(data){
     const li=document.createElement('li');
     li.appendChild(document.createTextNode(`Name-${data.name} Total Expense:${data.totalExpense}`));
     document.getElementById('leaderboard-list').appendChild(li)
+}
+
+function getReport(){
+    window.location.href='./report.html'
+}
+
+function download(){
+    const ispremiumuser=localStorage.getItem('premium');
+    if(ispremiumuser===true){
+    axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
+    .then((response) => {
+        if(response.status === 201){
+            var a = document.createElement("a");
+            a.href = response.data.fileUrl;
+            a.download = 'myexpense.csv';
+            a.click();
+        }
+    })
+}else{
+    alert('You are not a premium member!')
+}
 }
