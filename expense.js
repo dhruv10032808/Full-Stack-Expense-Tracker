@@ -194,10 +194,11 @@ function download(){
 }
 
 document.getElementById('page1').addEventListener('click',async ()=>{
+    list.innerHTML=''
     try{
     let response=await axios.get('http://localhost:3000/get-expense?page=1',{headers:{"Authorization":token}})
-    for (let i = 0; i < response.data.length; i++){
-        onsubmit(response.data[i]);
+    for (let i = 0; i < response.data.newExpenseDetail.length; i++){
+        onsubmit(response.data.newExpenseDetail[i]);
     }   
     }
     catch(err){
@@ -205,10 +206,12 @@ document.getElementById('page1').addEventListener('click',async ()=>{
     };
 })
 document.getElementById('page2').addEventListener('click',async ()=>{
+    list.innerHTML=''
     try{
     let response=await axios.get('http://localhost:3000/get-expense?page=2',{headers:{"Authorization":token}})
-    for (let i = 0; i < response.data.length; i++){
-        onsubmit(response.data[i]);
+    console.log(response.data)
+    for (let i = 0; i < response.data.newExpenseDetail.length; i++){
+        onsubmit(response.data.newExpenseDetail[i]);
     }   
     }
     catch(err){
