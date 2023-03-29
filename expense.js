@@ -56,6 +56,39 @@ window.addEventListener('DOMContentLoaded',()=>{
         .catch((err)=>console.log(err));
 })
 
+window.addEventListener('DOMContentLoaded',getrecent);
+async function getrecent(){
+    const ispremiumuser=localStorage.getItem('premium');
+    try{
+        if(ispremiumuser){
+    let response=await axios.get('http://localhost:3000/user/recent-download',{headers:{"Authorization":token}})
+    console.log(response.data.data[0]);
+    for (let i = 0; i < response.data.data.length; i++){
+
+    viewrecent(response.data.data[i]);
+
+
+    } 
+}else{
+    alert('You are not a premium member')
+}  
+    }
+    catch(err){
+        console.log(err)
+    };
+}
+
+   function viewrecent(data){
+    console.log(data);
+    const childhtml=`<li id=${data.id}><a href="${data.fileURL}">Download</a> ${data.createdAt}  `;
+
+    const parentnode=document.getElementById('recent-download');
+    console.log(parentnode);
+    parentnode.innerHTML=parentnode.innerHTML+childhtml;
+
+
+}
+
 function onsubmit(user){
     var btn=document.createElement('button');
     btn.appendChild(document.createTextNode('Edit Expense'));
@@ -145,12 +178,12 @@ function getReport(){
 
 function download(){
     const ispremiumuser=localStorage.getItem('premium');
-    if(ispremiumuser===true){
+    if(ispremiumuser==='true'){
     axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
     .then((response) => {
         if(response.status === 201){
             var a = document.createElement("a");
-            a.href = response.data.fileUrl;
+            a.href = response.data.fileURL;
             a.download = 'myexpense.csv';
             a.click();
         }
