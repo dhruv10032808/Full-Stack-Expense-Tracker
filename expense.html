@@ -32,9 +32,15 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </div>
 <ul id='list'></ul>
-<div class="text-center">
-  <button id="page1" >1</button>
-  <button id="page2" >2</button>
+<div class="text-center" id="pagination">
+</div>
+<div class="text-right">
+  <select id="select" class="form-select" aria-label="Default select example">
+    <option selected>Select no. of data</option>
+    <option value="2">2</option>
+    <option value="10">10</option>
+    <option value="30">30</option>
+  </select>
 </div>
 <ul id="leaderboard-list"></ul>
 <ul id="recent-download"></ul>

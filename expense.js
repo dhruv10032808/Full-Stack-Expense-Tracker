@@ -28,9 +28,13 @@ function local(e){
 })
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    axios.get('http://localhost:3000/get-expense',{headers:{'Authorization':token}})
+window.addEventListener('DOMContentLoaded',getexpense)
+function getexpense(){
+    list.innerHTML='';
+    const select=localStorage.getItem('select');
+    axios.get(`http://localhost:3000/get-expense?limit=${select}`,{headers:{'Authorization':token}})
         .then((res)=>{
+            createpagination(res.data.pages)
             console.log(res.data.ispremiumuser)
             for(var i=0;i<res.data.newExpenseDetail.length;i++){
                 onsubmit(res.data.newExpenseDetail[i]);
@@ -41,19 +45,18 @@ window.addEventListener('DOMContentLoaded', () => {
             console.log(res)
         })
         .catch((err)=>console.log(err));
-
-     })
+     }
 
 window.addEventListener('DOMContentLoaded',()=>{
-    axios.get('http://localhost:3000/get-expense',{headers:{'Authorization':token}})
-        .then((res)=>{
-            if(res.data.ispremiumuser){
-                document.getElementById('premium').innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button><button onclick="getReport()" class="btn btn-primary" style="margin-left:10px">Generate report</button>`
-             }
-             localStorage.setItem('premium',res.data.ispremiumuser)
-            console.log(res)
-        })
-        .catch((err)=>console.log(err));
+    axios.get(`http://localhost:3000/get-expense`,{headers:{'Authorization':token}})
+    .then((res)=>{
+        if(res.data.ispremiumuser){
+            document.getElementById('premium').innerHTML+=`<span>You are a premium user</span><button id="leaderboard" onclick="getleaderboard()" class="btn btn-primary" style="margin-left:10px">Show Leaderboard</button><button onclick="getReport()" class="btn btn-primary" style="margin-left:10px">Generate report</button>`
+         }
+         localStorage.setItem('premium',res.data.ispremiumuser)
+        console.log(res)
+    })
+    .catch((err)=>console.log(err));
 })
 
 window.addEventListener('DOMContentLoaded',getrecent);
@@ -117,6 +120,7 @@ function del(userId){
     .then((response)=>{
     const curr=document.getElementById(userId);
     list.removeChild(curr);
+    getexpense();
     })
     .catch((err)=>console.log(err));
 }
@@ -193,28 +197,29 @@ function download(){
 }
 }
 
-document.getElementById('page1').addEventListener('click',async ()=>{
-    list.innerHTML=''
+function createpagination(pages){
+    document.querySelector('#pagination').innerHTML="";
+    let childhtml="";
+    for(var i=1;i<=pages;i++){
+         childhtml+=`<a class="mx-2" id="page=${i}" >${i}</a>`;  
+    }
+    const parentnode=document.querySelector('#pagination');
+    parentnode.innerHTML=parentnode.innerHTML+childhtml;
+}
+document.querySelector('#pagination').addEventListener('click',getexpensepage);
+async function getexpensepage(e){
+    list.innerHTML="";
     try{
-    let response=await axios.get('http://localhost:3000/get-expense?page=1',{headers:{"Authorization":token}})
+    let response=await axios.get(`http://localhost:3000/get-expense?${e.target.id}`,{headers:{"Authorization":token}})
     for (let i = 0; i < response.data.newExpenseDetail.length; i++){
         onsubmit(response.data.newExpenseDetail[i]);
     }   
     }
     catch(err){
         console.log(err)
-    };
-})
-document.getElementById('page2').addEventListener('click',async ()=>{
-    list.innerHTML=''
-    try{
-    let response=await axios.get('http://localhost:3000/get-expense?page=2',{headers:{"Authorization":token}})
-    console.log(response.data)
-    for (let i = 0; i < response.data.newExpenseDetail.length; i++){
-        onsubmit(response.data.newExpenseDetail[i]);
-    }   
-    }
-    catch(err){
-        console.log(err)
-    };
+    }; 
+}
+document.querySelector('#select').addEventListener('change',(e)=>{
+    localStorage.setItem('select',e.target.value);
+    getexpense();
 })
