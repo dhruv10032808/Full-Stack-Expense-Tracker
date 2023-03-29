@@ -192,3 +192,26 @@ function download(){
     alert('You are not a premium member!')
 }
 }
+
+document.getElementById('page1').addEventListener('click',async ()=>{
+    try{
+    let response=await axios.get('http://localhost:3000/get-expense?page=1',{headers:{"Authorization":token}})
+    for (let i = 0; i < response.data.length; i++){
+        onsubmit(response.data[i]);
+    }   
+    }
+    catch(err){
+        console.log(err)
+    };
+})
+document.getElementById('page2').addEventListener('click',async ()=>{
+    try{
+    let response=await axios.get('http://localhost:3000/get-expense?page=2',{headers:{"Authorization":token}})
+    for (let i = 0; i < response.data.length; i++){
+        onsubmit(response.data[i]);
+    }   
+    }
+    catch(err){
+        console.log(err)
+    };
+})
